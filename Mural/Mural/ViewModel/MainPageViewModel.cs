@@ -161,9 +161,8 @@ namespace Mural.ViewModel
         {
             try
             {
+                Page = 1;
                 Items.Clear();
-                //MessagingCenter.Send<MainPage>(new MainPage(), "ShowLoading");
-                // await Task.Delay(TimeSpan.FromSeconds(2));
                 var dados = await _service.RecuperarPostagens(limite, 1);
                 if(dados != null && dados.Count > 0)
                 {
@@ -172,7 +171,6 @@ namespace Mural.ViewModel
                         Items.Add(d);
                     }
                 }
-                //MessagingCenter.Send<MainPage>(new MainPage(), "HideLoading");
             }
             catch (Exception ex)
             {
@@ -192,8 +190,7 @@ namespace Mural.ViewModel
             NomeArquivo = photo.FileName;
         }
         private async Task RefreshItemsAsync()
-        {
-            Page = 1;
+        {            
             IsRefreshing = true;
             await CarregarPostagens();
             IsRefreshing = false;
