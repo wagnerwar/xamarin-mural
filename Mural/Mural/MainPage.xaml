@@ -35,7 +35,10 @@
                 <ScrollView>
                     <CollectionView ItemsSource="{Binding Items}" 
                                 x:Name="Lista" 
-                                HorizontalOptions="FillAndExpand" >
+                                HorizontalOptions="FillAndExpand"  
+                                RemainingItemsThresholdReachedCommand="{Binding CarregarMaisItensCommand}" 
+                                RemainingItemsThresholdReachedCommandParameter="{Binding Page}"
+                                RemainingItemsThreshold="1" >
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <StackLayout x:Name="linha">

@@ -14,8 +14,15 @@ namespace Mural.Model
         {
             get
             {
-                ImageSource imageaData = ImageSource.FromStream(() => new MemoryStream(Arquivo));
-                return imageaData;
+                if(Arquivo != null)
+                {
+                    ImageSource imageaData = ImageSource.FromStream(() => new MemoryStream(Arquivo));
+                    return imageaData;
+                }
+                else
+                {
+                    return null;
+                }                
             }
         }
     }

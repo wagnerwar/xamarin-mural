@@ -15,11 +15,33 @@ namespace Mural.ViewModel
 {
     public class MainPageViewModel : BaseViewModel
     {
+        private int limite = 2;
         private INavigation _navigation { get; set; }
         private BancoService _service { get; set; }
         public ICommand EnviarPostagemCommand { get; set; }
         public ICommand EnviarArquivoCommand { get; set; }
         public ICommand RefreshCommand { get; set; }
+        public ICommand CarregarMaisItensCommand { get; set; }
+        private int _page;
+        public int Page
+        {
+            get { return _page; }
+            set
+            {
+                _page = value;
+                OnPropertyChanged();
+            }
+        }
+        bool _isLoadingItems;
+        public bool IsLoadingItems
+        {
+            get { return _isLoadingItems; }
+            set
+            {
+                _isLoadingItems = value;
+                OnPropertyChanged();
+            }
+        }
         private String _conteudo;
         public String Conteudo
         {
@@ -72,11 +94,13 @@ namespace Mural.ViewModel
         }
         public MainPageViewModel(INavigation navigation)
         {
+            Page = 1;
             _navigation = navigation;
             _service = new BancoService();
             EnviarPostagemCommand = new Command(async () => await EnviarPostagem());
             EnviarArquivoCommand = new Command(async () => await EnviarArquivo());
             RefreshCommand = new Command(async () => await RefreshItemsAsync());
+            CarregarMaisItensCommand = new Command(async () => await CarregarMaisItens());
             Items = new ObservableCollection<Postagem>();
             var t = Task.Run( () => this.CarregarPostagens());
             t.Wait();
@@ -140,7 +164,7 @@ namespace Mural.ViewModel
                 Items.Clear();
                 //MessagingCenter.Send<MainPage>(new MainPage(), "ShowLoading");
                 // await Task.Delay(TimeSpan.FromSeconds(2));
-                var dados = await _service.RecuperarPostagens();
+                var dados = await _service.RecuperarPostagens(limite, 1);
                 if(dados != null && dados.Count > 0)
                 {
                     foreach(var d in dados)
@@ -169,9 +193,52 @@ namespace Mural.ViewModel
         }
         private async Task RefreshItemsAsync()
         {
+            Page = 1;
             IsRefreshing = true;
             await CarregarPostagens();
             IsRefreshing = false;
+        }
+        private async Task CarregarMaisItens()
+        {
+            try
+            {
+                if (IsLoadingItems == true)
+                {
+                    return;
+                }
+
+                IsLoadingItems = true;
+                int TotalPaginas = 1;
+                int totalRegistros = _service.RecuperarTotalPostagens();
+                if (totalRegistros > limite)
+                {
+                    decimal divisao = Convert.ToDecimal(totalRegistros / Convert.ToDecimal(limite));
+                    var parteInteira = Convert.ToInt32(divisao);
+                    if (divisao > parteInteira)
+                    {
+                        TotalPaginas = parteInteira + 1;
+                    }
+                    else
+                    {
+                        TotalPaginas = parteInteira;
+                    }
+                }
+                if (Page < TotalPaginas)
+                {
+                    Page++;
+                    var dados = await _service.RecuperarPostagens(limite, Page);
+                    foreach (var d in dados)
+                    {
+                        Items.Add(d);
+                    }
+                }
+                IsLoadingItems = false;
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send<MainPage, String>(new MainPage(), "Erro", ex.Message);
+                IsLoading = false;
+            }
         }
     }
 }

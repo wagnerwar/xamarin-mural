@@ -73,12 +73,22 @@ namespace Mural.Service
                         {
 
                             var command = conexao.CreateCommand();
-                            command.CommandText =
+                            if(postagem.Arquivo != null)
+                            {
+                                command.CommandText =
                             String.Format(@"
                             insert into postagem (conteudo, arquivo ) values('{0}', @pic)
                             ", postagem.Conteudo);
-                            command.Parameters.Add("@pic", SqliteType.Blob);
-                            command.Parameters[0].Value = postagem.Arquivo;
+                                command.Parameters.Add("@pic", SqliteType.Blob);
+                                command.Parameters[0].Value = postagem.Arquivo;
+                            }
+                            else
+                            {
+                                command.CommandText =
+                            String.Format(@"
+                            insert into postagem (conteudo ) values('{0}')
+                            ", postagem.Conteudo);
+                            }                          
                             command.ExecuteNonQuery();
                             transaction.Commit();
                         }
@@ -99,7 +109,7 @@ namespace Mural.Service
                 }
             }
         }
-        public async Task<List<Postagem>> RecuperarPostagens()
+        public async Task<List<Postagem>> RecuperarPostagens(int limite, int page = 1)
         {
             try
             {
@@ -109,7 +119,11 @@ namespace Mural.Service
             {
                 throw ex;
             }
-
+            int offset = 0;
+            if (page > 1)
+            {
+                offset = (page - 1) * limite;
+            }
             List<Postagem> lista = new List<Postagem>();
             using (var conexao = new SqliteConnection(DatabasePath))
             {
@@ -119,8 +133,8 @@ namespace Mural.Service
                     var command = conexao.CreateCommand();
                     command.CommandText =
                     String.Format(@"
-                        select id, conteudo, arquivo from postagem
-                    ");
+                        select id, conteudo, arquivo from postagem limit {0}, {1}
+                    ", offset, limite);
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -129,15 +143,60 @@ namespace Mural.Service
                             item.Id = reader.GetInt32(0);
                             item.Conteudo = reader.GetString(1);
                             MemoryStream outputStream = new MemoryStream();
-                            using (var readStream = reader.GetStream(2))
+                            try
                             {
-                                await readStream.CopyToAsync(outputStream);
+                                if (reader.GetStream(2) != null)
+                                {
+                                    using (var readStream = reader.GetStream(2))
+                                    {
+                                        await readStream.CopyToAsync(outputStream);
+                                    }
+                                }
                             }
-                            item.Arquivo = outputStream.ToArray();
+                            catch(Exception ex)
+                            {
+
+                            }                                                        
+                            if(outputStream.Length > 0)
+                            {
+                                item.Arquivo = outputStream.ToArray();
+                            }                                                                                                               
                             lista.Add(item);
                         }
                     }
                     return lista;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    conexao.Close();
+                }
+            }
+        }
+        public int RecuperarTotalPostagens()
+        {
+            int retorno = 0;
+            using (var conexao = new SqliteConnection(DatabasePath))
+            {
+                conexao.Open();
+                try
+                {
+                    var command = conexao.CreateCommand();
+                    command.CommandText =
+                    String.Format(@"
+                        select count(*) from postagem
+                    ");
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            retorno = reader.GetInt32(0);
+                        }
+                    }
+                    return retorno;
                 }
                 catch (Exception ex)
                 {
