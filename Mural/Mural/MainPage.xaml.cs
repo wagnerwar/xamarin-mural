@@ -26,7 +26,7 @@ namespace Mural
             });
             MessagingCenter.Subscribe<MainPage, String>(this, "Sucesso", (sender, a) =>
             {
-                this.DisplayToastAsync(a, 3000);
+                this.DisplayToastAsync(a, 3000);           
             });
             MessagingCenter.Subscribe<MainPage>(this, "ShowLoading", (sender) =>
             {
@@ -38,6 +38,11 @@ namespace Mural
             {
                 PopupNavigation.Instance.PopAllAsync(true);
             });
+        }
+        public async Task CarregarItems()
+        {
+            //MainPageViewModel vm = (MainPageViewModel)this.BindingContext;
+            //await  vm.CarregarPostagens();            
         }
     }
 }

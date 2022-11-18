@@ -26,6 +26,34 @@
                 Source="icone_send.png" 
                 BackgroundColor="Transparent" 
                 Command="{Binding EnviarPostagemCommand}"></ImageButton>
+            <Label Text="{Binding NomeArquivo}" FontSize="Small" TextColor="Blue"></Label>
+        </StackLayout>
+        <StackLayout Orientation="Vertical">
+            <RefreshView IsRefreshing="{Binding IsRefreshing}"
+                     RefreshColor="Teal"
+                     Command="{Binding RefreshCommand}">
+                <ScrollView>
+                    <CollectionView ItemsSource="{Binding Items}" 
+                                x:Name="Lista" 
+                                HorizontalOptions="FillAndExpand" >
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout x:Name="linha">
+                                    <StackLayout Orientation="Vertical">
+                                        <Label Text="{Binding Conteudo}"                                        
+                                       HorizontalTextAlignment="Start" HorizontalOptions="FillAndExpand" TextColor="Black" FontSize="Medium"></Label>
+                                        <Image Source="{Binding ArquivoSource}" 
+                                        HeightRequest="250"
+                                        WidthRequest="250"
+                                        HorizontalOptions="Center" 
+                                        VerticalOptions="Center"></Image>
+                                    </StackLayout>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </ScrollView>
+            </RefreshView>
         </StackLayout>
     </StackLayout>
 </ContentPage>
