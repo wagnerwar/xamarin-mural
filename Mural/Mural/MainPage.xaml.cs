@@ -8,6 +8,9 @@ using Xamarin.Forms;
 using Mural.ViewModel;
 using Mural.Model;
 using Rg.Plugins.Popup.Services;
+using Android.Widget;
+using Xamarin.CommunityToolkit.Extensions;
+using Xamarin.CommunityToolkit.UI.Views.Options;
 namespace Mural
 {
     public partial class MainPage : ContentPage
@@ -19,11 +22,11 @@ namespace Mural
 
             MessagingCenter.Subscribe<MainPage, String>(this, "Erro", (sender, a) =>
             {
-                DisplayAlert("Erro", a, "OK");
+                this.DisplayToastAsync(a, 3000);
             });
             MessagingCenter.Subscribe<MainPage, String>(this, "Sucesso", (sender, a) =>
             {
-                DisplayAlert("Sucesso!!!", a, "OK");
+                this.DisplayToastAsync(a, 3000);
             });
             MessagingCenter.Subscribe<MainPage>(this, "ShowLoading", (sender) =>
             {
