@@ -37,16 +37,16 @@ namespace Mural.ViewModel
         {
             try
             {
-                IsLoading = true;
-                MessagingCenter.Send<MainPage>(new MainPage(), "ShowLoading");
-                return;
+                IsLoading = true;                
                 if (String.IsNullOrEmpty(Conteudo))
                 {
                     throw new Exception("Conteúdo deve estar preenchido");
                 }
+                MessagingCenter.Send<MainPage>(new MainPage(), "ShowLoading");
                 await Task.Delay(TimeSpan.FromSeconds(3));
-
+                MessagingCenter.Send<MainPage>(new MainPage(), "HideLoading");
                 IsLoading = false;
+                await LimparCampos();
                 MessagingCenter.Send<MainPage, String>(new MainPage(), "Sucesso", "Postagem enviada com sucesso");
             }
             catch(Exception ex)
@@ -60,6 +60,17 @@ namespace Mural.ViewModel
             {
                 var photo = await MediaPicker.PickPhotoAsync();
                 await LoadPhotoAsync(photo);
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send<MainPage, String>(new MainPage(), "Erro", ex.Message);
+            }
+        }
+        public async Task LimparCampos()
+        {
+            try
+            {
+                Conteudo = String.Empty;
             }
             catch (Exception ex)
             {

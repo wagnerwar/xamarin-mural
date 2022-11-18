@@ -31,6 +31,10 @@ namespace Mural
                 pagina.CloseWhenBackgroundIsClicked = false;
                 PopupNavigation.Instance.PushAsync(pagina);
             });
+            MessagingCenter.Subscribe<MainPage>(this, "HideLoading", (sender) =>
+            {
+                PopupNavigation.Instance.PopAllAsync(true);
+            });
         }
     }
 }
