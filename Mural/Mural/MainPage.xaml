@@ -12,10 +12,15 @@
                     IsSpellCheckEnabled="False"
                     Text="{Binding Conteudo}"  
                     HeightRequest="200" 
-                    WidthRequest="200">
+                    WidthRequest="380">
             </Editor>
         </StackLayout>
         <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand">
+            <ImageButton 
+                HorizontalOptions="Start" 
+                Source="icone_upload.png" 
+                BackgroundColor="Transparent" 
+                Command="{Binding EnviarArquivoCommand}"></ImageButton>
             <ImageButton 
                 HorizontalOptions="Start" 
                 Source="icone_send.png" 

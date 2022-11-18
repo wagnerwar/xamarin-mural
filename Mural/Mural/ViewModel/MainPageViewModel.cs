@@ -6,7 +6,8 @@ using Xamarin.Forms;
 using Mural.Service;
 using System.Windows.Input;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
+using System.Threading;
 namespace Mural.ViewModel
 {
     public class MainPageViewModel : BaseViewModel
@@ -14,6 +15,7 @@ namespace Mural.ViewModel
         private INavigation _navigation { get; set; }
         private BancoService _service { get; set; }
         public ICommand EnviarPostagemCommand { get; set; }
+        public ICommand EnviarArquivoCommand { get; set; }
         private String _conteudo;
         public String Conteudo
         {
@@ -29,21 +31,51 @@ namespace Mural.ViewModel
             _navigation = navigation;
             _service = new BancoService();
             EnviarPostagemCommand = new Command(async () => await EnviarPostagem());
+            EnviarArquivoCommand = new Command(async () => await EnviarArquivo());
         }
         public async Task EnviarPostagem()
         {
             try
             {
-                if(String.IsNullOrEmpty(Conteudo))
+                IsLoading = true;
+                MessagingCenter.Send<MainPage>(new MainPage(), "ShowLoading");
+                return;
+                if (String.IsNullOrEmpty(Conteudo))
                 {
                     throw new Exception("Conteúdo deve estar preenchido");
                 }
+                await Task.Delay(TimeSpan.FromSeconds(3));
+
+                IsLoading = false;
                 MessagingCenter.Send<MainPage, String>(new MainPage(), "Sucesso", "Postagem enviada com sucesso");
             }
             catch(Exception ex)
             {
                 MessagingCenter.Send<MainPage, String>(new MainPage(), "Erro", ex.Message);
             }
+        }
+        public async Task EnviarArquivo()
+        {
+            try
+            {
+                var photo = await MediaPicker.PickPhotoAsync();
+                await LoadPhotoAsync(photo);
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send<MainPage, String>(new MainPage(), "Erro", ex.Message);
+            }
+        }
+        async Task LoadPhotoAsync(FileResult photo)
+        {
+            // canceled
+            if (photo == null)
+            {
+                //PhotoPath = null;
+                return;
+            }
+            // recuperar binário e salvar no banco
+            
         }
     }
 }

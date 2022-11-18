@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Mural.ViewModel;
 using Mural.Model;
+using Rg.Plugins.Popup.Services;
 namespace Mural
 {
     public partial class MainPage : ContentPage
@@ -15,6 +16,7 @@ namespace Mural
         {
             InitializeComponent();
             this.BindingContext = new MainPageViewModel(Navigation);
+
             MessagingCenter.Subscribe<MainPage, String>(this, "Erro", (sender, a) =>
             {
                 DisplayAlert("Erro", a, "OK");
@@ -22,6 +24,12 @@ namespace Mural
             MessagingCenter.Subscribe<MainPage, String>(this, "Sucesso", (sender, a) =>
             {
                 DisplayAlert("Sucesso!!!", a, "OK");
+            });
+            MessagingCenter.Subscribe<MainPage>(this, "ShowLoading", (sender) =>
+            {
+                var pagina = new PopupPage();
+                pagina.CloseWhenBackgroundIsClicked = false;
+                PopupNavigation.Instance.PushAsync(pagina);
             });
         }
     }
