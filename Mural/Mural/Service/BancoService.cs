@@ -73,7 +73,7 @@ namespace Mural.Service
                         {
 
                             var command = conexao.CreateCommand();
-                            if(postagem.Arquivo != null)
+                            if (postagem.Arquivo != null)
                             {
                                 command.CommandText =
                             String.Format(@"
@@ -88,7 +88,7 @@ namespace Mural.Service
                             String.Format(@"
                             insert into postagem (conteudo ) values('{0}')
                             ", postagem.Conteudo);
-                            }                          
+                            }
                             command.ExecuteNonQuery();
                             transaction.Commit();
                         }
@@ -153,14 +153,14 @@ namespace Mural.Service
                                     }
                                 }
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
 
-                            }                                                        
-                            if(outputStream.Length > 0)
+                            }
+                            if (outputStream.Length > 0)
                             {
                                 item.Arquivo = outputStream.ToArray();
-                            }                                                                                                               
+                            }
                             lista.Add(item);
                         }
                     }
@@ -197,6 +197,51 @@ namespace Mural.Service
                         }
                     }
                     return retorno;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    conexao.Close();
+                }
+            }
+        }
+        public void ExcluirPostagem(Postagem postagem)
+        {
+            try
+            {
+                this.CriarBanco();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            using (var conexao = new SqliteConnection(DatabasePath))
+            {
+                conexao.Open();
+                try
+                {
+                    using (var transaction = conexao.BeginTransaction())
+                    {
+                        try
+                        {
+                            var command = conexao.CreateCommand();
+                            command.CommandText =
+                            String.Format(@"
+                            delete from postagem where id= '{0}'
+                            ", postagem.Id);
+                            command.ExecuteNonQuery();
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            throw ex;
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {

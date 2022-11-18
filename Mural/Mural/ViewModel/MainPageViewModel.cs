@@ -19,6 +19,7 @@ namespace Mural.ViewModel
         private INavigation _navigation { get; set; }
         private BancoService _service { get; set; }
         public ICommand EnviarPostagemCommand { get; set; }
+        public ICommand ExcluirPostagemCommand { get; set; }
         public ICommand EnviarArquivoCommand { get; set; }
         public ICommand RefreshCommand { get; set; }
         public ICommand CarregarMaisItensCommand { get; set; }
@@ -101,6 +102,7 @@ namespace Mural.ViewModel
             EnviarArquivoCommand = new Command(async () => await EnviarArquivo());
             RefreshCommand = new Command(async () => await RefreshItemsAsync());
             CarregarMaisItensCommand = new Command(async () => await CarregarMaisItens());
+            ExcluirPostagemCommand = new Command<Postagem>(async (p) => await ExcluirPostagem(p));
             Items = new ObservableCollection<Postagem>();
             var t = Task.Run( () => this.CarregarPostagens());
             t.Wait();
@@ -128,6 +130,29 @@ namespace Mural.ViewModel
                 MessagingCenter.Send<MainPage, String>(new MainPage(), "Sucesso", "Postagem enviada com sucesso");
             }
             catch(Exception ex)
+            {
+                MessagingCenter.Send<MainPage, String>(new MainPage(), "Erro", ex.Message);
+            }
+        }
+        public async Task ExcluirPostagem(Postagem postagem)
+        {
+            try
+            {
+                IsLoading = true;
+                if (String.IsNullOrEmpty(Conteudo))
+                {
+                    throw new Exception("Conteúdo deve estar preenchido");
+                }
+                MessagingCenter.Send<MainPage>(new MainPage(), "ShowLoading");
+                await Task.Delay(TimeSpan.FromSeconds(3));
+                _service.ExcluirPostagem(postagem);
+                MessagingCenter.Send<MainPage>(new MainPage(), "HideLoading");
+                IsLoading = false;
+                await LimparCampos();
+                await CarregarPostagens();
+                MessagingCenter.Send<MainPage, String>(new MainPage(), "Sucesso", "Postagem enviada com sucesso");
+            }
+            catch (Exception ex)
             {
                 MessagingCenter.Send<MainPage, String>(new MainPage(), "Erro", ex.Message);
             }

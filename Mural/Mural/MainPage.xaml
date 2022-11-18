@@ -41,17 +41,28 @@
                                 RemainingItemsThreshold="1" >
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <StackLayout x:Name="linha">
-                                    <StackLayout Orientation="Vertical">
-                                        <Label Text="{Binding Conteudo}"                                        
+                                <Frame x:Name="linha" BorderColor="Black" CornerRadius="10" BackgroundColor="White" >
+                                    <StackLayout>
+                                        <StackLayout Orientation="Vertical">
+                                            <Label Text="{Binding Conteudo}"                                        
                                        HorizontalTextAlignment="Start" HorizontalOptions="FillAndExpand" TextColor="Black" FontSize="Medium"></Label>
-                                        <Image Source="{Binding ArquivoSource}" 
+                                            <Image Source="{Binding ArquivoSource}" 
                                         HeightRequest="250"
                                         WidthRequest="250"
                                         HorizontalOptions="Center" 
                                         VerticalOptions="Center"></Image>
+                                        </StackLayout>
+                                        <StackLayout Orientation="Horizontal">
+                                            <ImageButton 
+                                    Source="icone_trash.png" 
+                                    Grid.Column="1"
+                                    Command="{Binding ExcluirPostagemCommand}"                                
+                                    BindingContext="{Binding Source={x:Reference Lista}, Path=BindingContext}"                                
+                                    CommandParameter="{Binding Source={x:Reference linha}, Path=BindingContext}"                                 
+                                   HorizontalOptions="Start" BackgroundColor="Transparent"></ImageButton>
+                                        </StackLayout>
                                     </StackLayout>
-                                </StackLayout>
+                                </Frame>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
