@@ -138,11 +138,7 @@ namespace Mural.ViewModel
         {
             try
             {
-                IsLoading = true;
-                if (String.IsNullOrEmpty(Conteudo))
-                {
-                    throw new Exception("Conteúdo deve estar preenchido");
-                }
+                IsLoading = true;                
                 MessagingCenter.Send<MainPage>(new MainPage(), "ShowLoading");
                 await Task.Delay(TimeSpan.FromSeconds(3));
                 _service.ExcluirPostagem(postagem);
@@ -150,7 +146,7 @@ namespace Mural.ViewModel
                 IsLoading = false;
                 await LimparCampos();
                 await CarregarPostagens();
-                MessagingCenter.Send<MainPage, String>(new MainPage(), "Sucesso", "Postagem enviada com sucesso");
+                MessagingCenter.Send<MainPage, String>(new MainPage(), "Sucesso", "Postagem excluida com sucesso");
             }
             catch (Exception ex)
             {

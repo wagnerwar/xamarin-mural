@@ -41,14 +41,20 @@
                                 RemainingItemsThreshold="1" >
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Frame x:Name="linha" BorderColor="Black" CornerRadius="10" BackgroundColor="White" >
+                                <Frame x:Name="linha" 
+                                       BorderColor="Black" 
+                                       CornerRadius="10" 
+                                       BackgroundColor="White" 
+                                       Margin="20, 20, 20, 20" 
+                                       HasShadow="True" 
+                                       Padding="10" >
                                     <StackLayout>
                                         <StackLayout Orientation="Vertical">
                                             <Label Text="{Binding Conteudo}"                                        
-                                       HorizontalTextAlignment="Start" HorizontalOptions="FillAndExpand" TextColor="Black" FontSize="Medium"></Label>
+                                       HorizontalTextAlignment="Start" HorizontalOptions="StartAndExpand" TextColor="Black" FontSize="Medium"></Label>
                                             <Image Source="{Binding ArquivoSource}" 
-                                        HeightRequest="250"
-                                        WidthRequest="250"
+                                        HeightRequest="100"
+                                        WidthRequest="100"
                                         HorizontalOptions="Center" 
                                         VerticalOptions="Center"></Image>
                                         </StackLayout>
