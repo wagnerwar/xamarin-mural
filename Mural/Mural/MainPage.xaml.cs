@@ -38,11 +38,12 @@ namespace Mural
             {
                 PopupNavigation.Instance.PopAllAsync(true);
             });
-        }
-        public async Task CarregarItems()
-        {
-            //MainPageViewModel vm = (MainPageViewModel)this.BindingContext;
-            //await  vm.CarregarPostagens();            
+            MessagingCenter.Subscribe<MainPage, Postagem>(this, "CarregarComentarios", (sender, p) =>
+            {
+                var pagina = new ComentarioPopup(p);
+                pagina.CloseWhenBackgroundIsClicked = false;
+                PopupNavigation.Instance.PushAsync(pagina);
+            });
         }
     }
 }

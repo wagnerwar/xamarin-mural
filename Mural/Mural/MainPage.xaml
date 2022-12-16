@@ -60,9 +60,14 @@
                                         </StackLayout>
                                         <StackLayout Orientation="Horizontal">
                                             <ImageButton 
-                                    Source="icone_trash.png" 
-                                    Grid.Column="1"
+                                    Source="icone_trash.png"
                                     Command="{Binding ExcluirPostagemCommand}"                                
+                                    BindingContext="{Binding Source={x:Reference Lista}, Path=BindingContext}"                                
+                                    CommandParameter="{Binding Source={x:Reference linha}, Path=BindingContext}"                                 
+                                   HorizontalOptions="Start" BackgroundColor="Transparent"></ImageButton>
+                                            <ImageButton 
+                                    Source="icone_comentario.png"
+                                    Command="{Binding ComentariosPostagemCommand}"                                
                                     BindingContext="{Binding Source={x:Reference Lista}, Path=BindingContext}"                                
                                     CommandParameter="{Binding Source={x:Reference linha}, Path=BindingContext}"                                 
                                    HorizontalOptions="Start" BackgroundColor="Transparent"></ImageButton>

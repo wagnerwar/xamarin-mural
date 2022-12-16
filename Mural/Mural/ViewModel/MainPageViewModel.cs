@@ -23,6 +23,7 @@ namespace Mural.ViewModel
         public ICommand EnviarArquivoCommand { get; set; }
         public ICommand RefreshCommand { get; set; }
         public ICommand CarregarMaisItensCommand { get; set; }
+        public ICommand ComentariosPostagemCommand { get; set; }
         private int _page;
         public int Page
         {
@@ -103,10 +104,23 @@ namespace Mural.ViewModel
             RefreshCommand = new Command(async () => await RefreshItemsAsync());
             CarregarMaisItensCommand = new Command(async () => await CarregarMaisItens());
             ExcluirPostagemCommand = new Command<Postagem>(async (p) => await ExcluirPostagem(p));
+            ComentariosPostagemCommand = new Command<Postagem>(async (p) => await ComentariosPostagem(p));
             Items = new ObservableCollection<Postagem>();
             var t = Task.Run( () => this.CarregarPostagens());
             t.Wait();
         }
+        private async Task ComentariosPostagem(Postagem postagem)
+        {
+            try
+            {
+                MessagingCenter.Send<MainPage, Postagem>(new MainPage(), "CarregarComentarios", postagem);
+            }
+            catch (Exception ex)
+            {
+                MessagingCenter.Send<MainPage, String>(new MainPage(), "Erro", ex.Message);
+            }
+        }
+
         public async Task EnviarPostagem()
         {
             try
@@ -116,14 +130,14 @@ namespace Mural.ViewModel
                 {
                     throw new Exception("Conteúdo deve estar preenchido");
                 }
-                MessagingCenter.Send<MainPage>(new MainPage(), "ShowLoading");
+                ShowLoading();
                 await Task.Delay(TimeSpan.FromSeconds(3));
                 Postagem postagem = new Postagem();
                 postagem.Conteudo = Conteudo;
                 postagem.Arquivo = Arquivo;
                 // inserir no banco
                 _service.InserirPostagem(postagem);
-                MessagingCenter.Send<MainPage>(new MainPage(), "HideLoading");
+                HideLoading();
                 IsLoading = false;
                 await LimparCampos();
                 await CarregarPostagens();
@@ -134,15 +148,23 @@ namespace Mural.ViewModel
                 MessagingCenter.Send<MainPage, String>(new MainPage(), "Erro", ex.Message);
             }
         }
+        private void ShowLoading()
+        {
+            MessagingCenter.Send<MainPage>(new MainPage(), "ShowLoading");
+        }
+        private void HideLoading()
+        {
+            MessagingCenter.Send<MainPage>(new MainPage(), "HideLoading");
+        }
         public async Task ExcluirPostagem(Postagem postagem)
         {
             try
             {
                 IsLoading = true;                
-                MessagingCenter.Send<MainPage>(new MainPage(), "ShowLoading");
+                ShowLoading();
                 await Task.Delay(TimeSpan.FromSeconds(3));
                 _service.ExcluirPostagem(postagem);
-                MessagingCenter.Send<MainPage>(new MainPage(), "HideLoading");
+                HideLoading();
                 IsLoading = false;
                 await LimparCampos();
                 await CarregarPostagens();
