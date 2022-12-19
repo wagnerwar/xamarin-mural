@@ -110,7 +110,7 @@ namespace Mural.ViewModel
                 IsLoading = false;
                 Texto = String.Empty;
                 MessagingCenter.Send<ComentarioPopup>(new ComentarioPopup(Postagem), "Sucesso");
-                await Fechar();
+                await CarregarComentarios();
             }
             catch (Exception ex)
             {

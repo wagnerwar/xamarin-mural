@@ -34,7 +34,7 @@
                 <ActivityIndicator Color="Black" 
                     VerticalOptions="Center" 
                     HorizontalOptions="Center" 
-                    x:Name="actInd" 
+                    x:Name="actInd1" 
                     IsVisible="{Binding IsComentariosLoading}" 
                     IsRunning="{Binding IsComentariosLoading}" />
             </StackLayout>
@@ -54,8 +54,8 @@
                                        BackgroundColor="White" 
                                        Margin="20, 20, 20, 20" 
                                        HasShadow="True" 
-                                       Padding="10" >
-                                    <StackLayout>
+                                       Padding="5" >
+                                    <StackLayout Spacing="5">
                                         <StackLayout Orientation="Horizontal">
                                             <Label Text="{Binding Conteudo}"                                        
                                             HorizontalTextAlignment="Start" 
