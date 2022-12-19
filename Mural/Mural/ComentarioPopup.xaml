@@ -30,6 +30,50 @@
                 BackgroundColor="Transparent"
                 Command="{Binding FecharCommand}"></ImageButton>
             </StackLayout>
+            <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+                <ActivityIndicator Color="Black" 
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Center" 
+                    x:Name="actInd" 
+                    IsVisible="{Binding IsComentariosLoading}" 
+                    IsRunning="{Binding IsComentariosLoading}" />
+            </StackLayout>
+            <!-- Listagem de comentário -->
+            <RefreshView IsRefreshing="{Binding IsRefreshing}"
+                     RefreshColor="Teal"
+                     Command="{Binding RefreshCommand}">
+                <ScrollView>
+                    <CollectionView ItemsSource="{Binding Items}" 
+                                x:Name="Lista" 
+                                HorizontalOptions="FillAndExpand" >
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame x:Name="linha" 
+                                       BorderColor="Black" 
+                                       CornerRadius="10" 
+                                       BackgroundColor="White" 
+                                       Margin="20, 20, 20, 20" 
+                                       HasShadow="True" 
+                                       Padding="10" >
+                                    <StackLayout>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding Conteudo}"                                        
+                                            HorizontalTextAlignment="Start" 
+                                            HorizontalOptions="StartAndExpand" 
+                                            TextColor="Black" 
+                                            FontSize="Body"></Label>
+                                            <ImageButton 
+                                                Source="icone_trash.png"                                                            
+                                                HorizontalOptions="End" 
+                                                BackgroundColor="Transparent"></ImageButton>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </ScrollView>
+            </RefreshView>
             <!-- Envio de comentário -->
             <StackLayout 
             HorizontalOptions="FillAndExpand" 

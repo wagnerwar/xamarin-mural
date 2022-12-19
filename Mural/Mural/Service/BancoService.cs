@@ -38,6 +38,12 @@ namespace Mural.Service
                         conteudo text NOT NULL,
                         arquivo blob null
                     );
+                    CREATE TABLE IF NOT EXISTS comentario (
+                        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                        texto text NOT NULL,
+                        id_postagem integer not null,
+                        FOREIGN KEY(id_postagem) REFERENCES postagem(id)
+                    );
                 ";
                     command.ExecuteNonQuery();
                 }
@@ -89,6 +95,51 @@ namespace Mural.Service
                             insert into postagem (conteudo ) values('{0}')
                             ", postagem.Conteudo);
                             }
+                            command.ExecuteNonQuery();
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            throw ex;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    conexao.Close();
+                }
+            }
+        }
+        public void InserirComentario(Comentario comentario)
+        {
+            try
+            {
+                this.CriarBanco();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            using (var conexao = new SqliteConnection(DatabasePath))
+            {
+                conexao.Open();
+                try
+                {
+                    using (var transaction = conexao.BeginTransaction())
+                    {
+                        try
+                        {
+                            var command = conexao.CreateCommand();                           
+                            command.CommandText =
+                            String.Format(@"
+                            insert into comentario (id_postagem, texto ) values('{0}', '{1}')
+                            ", comentario.postagemId, comentario.Conteudo);                            
                             command.ExecuteNonQuery();
                             transaction.Commit();
                         }
@@ -161,6 +212,50 @@ namespace Mural.Service
                             {
                                 item.Arquivo = outputStream.ToArray();
                             }
+                            lista.Add(item);
+                        }
+                    }
+                    return lista;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    conexao.Close();
+                }
+            }
+        }
+        public async Task<List<Comentario>> RecuperarComentarios(int idPostagem)
+        {
+            try
+            {
+                this.CriarBanco();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+           
+            List<Comentario> lista = new List<Comentario>();
+            using (var conexao = new SqliteConnection(DatabasePath))
+            {
+                conexao.Open();
+                try
+                {
+                    var command = conexao.CreateCommand();
+                    command.CommandText =
+                    String.Format(@"
+                        select id, texto from comentario where id_postagem = '{0}'
+                    ", idPostagem);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Comentario item = new Comentario();
+                            item.Id = reader.GetInt32(0);
+                            item.Conteudo = reader.GetString(1);                           
                             lista.Add(item);
                         }
                     }
