@@ -10,5 +10,6 @@ namespace Mural.Model
         public int Id { get; set; }
         public String Conteudo { get; set; }
         public int postagemId { get; set; }
+       
     }
 }

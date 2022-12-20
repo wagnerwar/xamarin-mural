@@ -135,9 +135,9 @@ namespace Mural.ViewModel
                     foreach (var d in dados)
                     {
                         Items.Add(d);
-                    }
-                    IsComentariosLoading = false;
+                    }                    
                 }
+                IsComentariosLoading = false;
             }
             catch (Exception ex)
             {

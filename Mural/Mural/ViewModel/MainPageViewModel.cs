@@ -93,7 +93,7 @@ namespace Mural.ViewModel
                 items = value;
                 OnPropertyChanged();
             }
-        }
+        }        
         public MainPageViewModel(INavigation navigation)
         {
             Page = 1;

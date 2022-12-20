@@ -212,6 +212,18 @@ namespace Mural.Service
                             {
                                 item.Arquivo = outputStream.ToArray();
                             }
+                            var outroComando = conexao.CreateCommand();
+                            outroComando.CommandText =
+                            String.Format(@"
+                                select count(*) from comentario where id_postagem = '{0}'
+                            ", item.Id);
+                            using (var leitor = outroComando.ExecuteReader())
+                            {
+                                while (leitor.Read())
+                                {
+                                    item.NumeroComentarios = reader.GetInt32(0);
+                                }
+                            }
                             lista.Add(item);
                         }
                     }
@@ -326,7 +338,8 @@ namespace Mural.Service
                             var command = conexao.CreateCommand();
                             command.CommandText =
                             String.Format(@"
-                            delete from postagem where id= '{0}'
+                            delete from postagem where id= '{0}';
+                            delete from comentario where id_postagem = '{0}'
                             ", postagem.Id);
                             command.ExecuteNonQuery();
                             transaction.Commit();

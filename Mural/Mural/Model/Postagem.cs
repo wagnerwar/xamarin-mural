@@ -8,6 +8,10 @@ namespace Mural.Model
     public class Postagem
     {
         public int Id { get; set; }
+        public int NumeroComentarios
+        {
+            get; set;
+        }
         public String Conteudo { get; set; }
         public byte[] Arquivo { get; set; }
         public ImageSource ArquivoSource
