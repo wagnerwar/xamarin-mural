@@ -46,6 +46,12 @@
                     <CollectionView ItemsSource="{Binding Items}" 
                                 x:Name="Lista" 
                                 HorizontalOptions="FillAndExpand" >
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout 
+                                Orientation="Vertical" 
+                                ItemSpacing="20">
+                            </LinearItemsLayout>
+                        </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Frame x:Name="linha" 

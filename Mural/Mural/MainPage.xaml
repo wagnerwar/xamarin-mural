@@ -39,6 +39,12 @@
                                 RemainingItemsThresholdReachedCommand="{Binding CarregarMaisItensCommand}" 
                                 RemainingItemsThresholdReachedCommandParameter="{Binding Page}"
                                 RemainingItemsThreshold="1" >
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout 
+                                Orientation="Vertical" 
+                                ItemSpacing="20">
+                            </LinearItemsLayout>
+                        </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Frame x:Name="linha" 
